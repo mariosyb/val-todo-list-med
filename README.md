@@ -1,4 +1,4 @@
-# Dios si quiere · Mario y Valery
+# TODO list
 
 Página en español para contar los días hasta nuestro próximo encuentro y planear juntos el viaje a Medellín. Es una web estática: GitHub Pages sirve los archivos y Firebase Realtime Database sincroniza las ideas en tiempo real.
 
