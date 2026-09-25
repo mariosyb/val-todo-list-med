@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f8f5f1" />
+    <meta name="description" content="Nuestra cuenta regresiva y nuestros planes compartidos para Medellín." />
+    <title>Dios si quiere · Mario y Valery</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f8f5f1'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-size='43' fill='%23b45562'%3E%E2%99%80%3C/text%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles-botticelli.css?v=20260925l" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header">
+        <div class="monogram" aria-hidden="true">M<span>✦</span>V</div>
+        <div class="header-names">Mario <span>&amp;</span> Valery</div>
+        <div class="header-date">15 ENE 2027 <span aria-hidden="true">·</span> PANAMÁ</div>
+      </header>
+
+      <main>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-star" aria-hidden="true">✦</span> NUESTRO PRÓXIMO ENCUENTRO</p>
+            <h1 id="hero-title">Dios<br /><em>si quiere</em> <span class="prayer-emoji" role="img" aria-label="manos rezando">🙏</span></h1>
+            <p class="hero-subline">Fase 1, Medellín</p>
+          </div>
+
+          <figure class="hero-art venus-isolated">
+            <div class="venus-artwork">
+              <img class="venus-art-photo" src="./assets/venus-cotton-candy-cutout.png" alt="Venus sobre una concha, sosteniendo algodón de azúcar" width="512" height="512" />
+            </div>
+          </figure>
+
+          <div class="countdown-card" aria-label="Cuenta regresiva estimada hasta nuestro encuentro">
+            <div class="countdown-heading">
+              <div class="swords-medallion" role="img" aria-label="Un abrazo protegido por dos espadas cruzadas"><span class="embrace-symbol" aria-hidden="true">🫂</span><img src="./assets/swords.png" alt="" width="160" height="160" /></div>
+              <div>
+                <p class="countdown-overline">CUENTA REGRESIVA</p>
+                <h2 class="countdown-title">Hasta que vuelvas a estar en tu hogar&nbsp;<span class="countdown-title-heart">♡</span></h2>
+                <p class="countdown-date"><time datetime="2027-01-15T20:30:00-05:00">15 de enero · 20:30</time> <span>hora de Panamá</span></p>
+              </div>
+            </div>
+
+            <div class="countdown-grid" aria-live="off">
+              <div class="time-cell"><strong id="weeks">—</strong><span>semanas</span></div>
+              <div class="time-cell"><strong id="days">—</strong><span>días</span></div>
+              <div class="time-cell"><strong id="hours">—</strong><span>horas</span></div>
+              <div class="time-cell time-cell-seconds"><strong id="seconds">—</strong><span>segundos</span></div>
+            </div>
+
+          </div>
+        </section>
+
+        <section class="plans-section" aria-labelledby="plans-title">
+          <div class="plans-title-row">
+            <div>
+              <p class="plans-eyebrow">MEDELLÍN, JUNTOS</p>
+              <h2 id="plans-title">Nuestros planes</h2>
+            </div>
+            <div class="plans-divider" aria-hidden="true"><span>✦</span></div>
+          </div>
+
+          <p class="missing-link" id="missing-link" hidden>Abre tu enlace personal para ver los planes compartidos.</p>
+
+          <div class="room-toolbar" id="room-toolbar" hidden>
+            <span class="room-identity" id="room-identity"></span>
+            <div class="connection-pill" id="connection-indicator" data-state="connecting" role="status" aria-live="polite">
+              <span class="connection-dot" aria-hidden="true"></span>
+              <span id="connection-label">Conectando con nuestras ideas…</span>
+            </div>
+          </div>
+
+          <div class="boards-grid" hidden>
+            <section class="board board-planning" data-category="planning" aria-labelledby="planning-title">
+              <div class="board-header">
+                <div>
+                  <span class="board-kicker">01 · ANTES DEL VIAJE</span>
+                  <h3 id="planning-title">Por planear</h3>
+                </div>
+                <span class="board-count" id="planning-count">0 ideas</span>
+              </div>
+              <p class="board-description">Lo que todavía necesitamos decidir o concretar.</p>
+              <div class="board-filters" role="group" aria-label="Filtrar ideas por planear">
+                <button type="button" class="filter-button is-active" data-filter="all" aria-pressed="true">Todas</button>
+                <button type="button" class="filter-button" data-filter="pending" aria-pressed="false">Pendientes</button>
+                <button type="button" class="filter-button" data-filter="done" aria-pressed="false">Hechas</button>
+              </div>
+              <div class="task-list" id="planning-list"></div>
+              <button class="add-preview" type="button" data-show-form="planning"><span aria-hidden="true">＋</span> Añadir algo por planear</button>
+              <form class="task-form" data-form="planning" hidden>
+                <label>Título<input name="title" type="text" maxlength="160" placeholder="¿Qué necesitamos planear?" required /></label>
+                <label>Nota opcional<textarea name="note" maxlength="1000" rows="2" placeholder="Un detalle para recordar..."></textarea></label>
+                <div class="form-actions"><button type="button" class="form-cancel">Cancelar</button><button type="submit" class="form-submit">Guardar idea</button></div>
+              </form>
+            </section>
+
+            <section class="board board-living" data-category="living" aria-labelledby="living-title">
+              <div class="board-header">
+                <div>
+                  <span class="board-kicker">02 · CUANDO ESTEMOS JUNTOS</span>
+                  <h3 id="living-title">Por vivir en Medellín</h3>
+                </div>
+                <span class="board-count" id="living-count">0 ideas</span>
+              </div>
+              <p class="board-description">Los momentos que queremos guardar para nosotros.</p>
+              <div class="board-filters" role="group" aria-label="Filtrar ideas para vivir en Medellín">
+                <button type="button" class="filter-button is-active" data-filter="all" aria-pressed="true">Todas</button>
+                <button type="button" class="filter-button" data-filter="pending" aria-pressed="false">Pendientes</button>
+                <button type="button" class="filter-button" data-filter="done" aria-pressed="false">Hechas</button>
+              </div>
+              <div class="task-list" id="living-list"></div>
+              <button class="add-preview" type="button" data-show-form="living"><span aria-hidden="true">＋</span> Añadir algo por vivir</button>
+              <form class="task-form" data-form="living" hidden>
+                <label>Título<input name="title" type="text" maxlength="160" placeholder="¿Qué queremos vivir?" required /></label>
+                <label>Nota opcional<textarea name="note" maxlength="1000" rows="2" placeholder="Un detalle para recordar..."></textarea></label>
+                <div class="form-actions"><button type="button" class="form-cancel">Cancelar</button><button type="submit" class="form-submit">Guardar idea</button></div>
+              </form>
+            </section>
+          </div>
+          <div class="board-status-row" hidden>
+            <p class="prototype-note" id="sync-status" role="alert" hidden></p>
+          </div>
+        </section>
+        <div class="undo-toast" id="undo-toast" role="status" hidden><span>Idea eliminada</span><button type="button" id="undo-button">Deshacer</button></div>
+      </main>
+
+      <footer class="site-footer"><span>MARIO &amp; VALERY</span><span class="footer-star" aria-hidden="true">✦</span><span>SI DIOS QUIERE</span></footer>
+    </div>
+    <script src="./script.js?v=20260925h" type="module"></script>
+  </body>
+</html>
