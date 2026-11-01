@@ -30,11 +30,25 @@ Los enlaces no son un inicio de sesión: quien tenga uno puede acceder a la sala
 
 - Cuenta regresiva en vivo hasta el **15 de enero de 2027 a las 20:30, hora de Panamá**. Es una estimación del momento de vernos cara a cara.
 - Listas **Por planear** y **Por vivir en Medellín**.
+- Sección **Nuestro menú** con platos por cocinar y una lista **Para el mercado** con ingredientes, cantidades y notas.
 - Añadir, editar, marcar como hecha, filtrar y eliminar ideas; se puede deshacer una eliminación durante diez segundos.
 - Sincronización entre dispositivos e indicación visible de conexión.
 - Nombre del autor de cada idea según su enlace personal.
+- Secciones y listas plegables; cada navegador recuerda cuáles prefieres dejar cerradas.
 
 Las ideas se guardan en **Firebase Console → Realtime Database → Datos → `rooms/CODIGO_DE_SALA/todos`**. No están guardadas en GitHub.
+
+## Habilitar el menú en Firebase
+
+Las cuatro listas comparten el mismo formato y la misma ruta de datos. Antes de publicar la versión con menú, abre **Realtime Database → Reglas** y busca la validación de `category` dentro de `rooms → CODIGO_DE_SALA → todos → $todoId` (el nombre de la variable puede ser diferente). Debe permitir estas cuatro categorías:
+
+```json
+"category": {
+  ".validate": "newData.isString() && (newData.val() === 'planning' || newData.val() === 'living' || newData.val() === 'menu' || newData.val() === 'shopping')"
+}
+```
+
+Conserva el código de sala y las demás reglas actuales. Publica las reglas y comprueba que se puede añadir un plato y un ingrediente. Esto no modifica ni elimina las ideas existentes.
 
 ## Probar antes de compartir
 

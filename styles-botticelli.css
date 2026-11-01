@@ -358,6 +358,42 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .add-preview { width: 100%; text-align: left; }
 .add-preview:hover { background: #eff9f2; }
 .board-living .add-preview:hover { background: #fff1f2; }
+.kitchen-section { margin-top: 28px; }
+.section-description { max-width: 42rem; margin: 13px 0 0; color: #71817c; font-size: 0.94rem; line-height: 1.6; }
+.menu-heart { display: inline-block; color: var(--rose); font-family: "Apple Symbols", "Segoe UI Symbol", sans-serif; font-size: 0.6em; letter-spacing: 0; vertical-align: 0.08em; }
+.board-menu { border-color: rgba(171, 108, 125, 0.18); background: rgba(255, 245, 243, 0.82); }
+.board-menu .board-kicker, .board-menu .board-count { color: var(--rose); }
+.board-menu .board-count { border-color: rgba(180, 85, 98, 0.3); }
+.board-menu .task { border-color: rgba(171, 108, 125, 0.12); }
+.board-menu .task-check { border-color: #c98088; }
+.board-menu .task.is-complete .task-check { border-color: var(--rose); background: var(--rose); }
+.board-menu .filter-button.is-active { border-color: rgba(180, 85, 98, 0.22); color: var(--rose); }
+.board-menu .add-preview { border-color: rgba(180, 85, 98, 0.4); color: var(--rose); }
+.board-menu .add-preview:hover { background: #fff1f2; }
+.board-menu .form-submit { border-color: var(--rose); background: var(--rose); }
+.board-menu .form-submit:hover { background: #994553; }
+.kitchen-section .task-content > p { white-space: pre-line; }
+.form-hint { margin: -3px 0 0; color: #71817c; font-size: 0.76rem; line-height: 1.5; }
+.board-feedback { margin: 12px 0 0; color: #ad3f55; font-size: 0.82rem; line-height: 1.5; }
+details > summary { cursor: pointer; list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::after {
+  content: "";
+  flex: 0 0 8px;
+  width: 8px;
+  height: 8px;
+  margin: 8px 3px 0 7px;
+  border-right: 1.5px solid #71817c;
+  border-bottom: 1.5px solid #71817c;
+  transform: rotate(-45deg);
+}
+details[open] > summary::after { transform: rotate(45deg); }
+summary:focus-visible { outline: 3px solid rgba(57, 121, 111, 0.45); outline-offset: 6px; border-radius: 5px; }
+.plans-title-row > div:first-child { flex: 1; min-width: 0; }
+.board-header > div { flex: 1; min-width: 0; }
+.board > .board-header { align-items: start; }
+.plans-section:not([open]) > .plans-title-row { margin-bottom: 0; }
+.boards-grid { align-items: start; }
 .task-form, .edit-form { display: grid; gap: 12px; width: 100%; margin-top: 13px; padding: 15px; border: 1px solid rgba(57, 121, 111, 0.22); border-radius: 12px; background: rgba(255, 255, 255, 0.72); }
 .edit-form { margin: 0; padding: 0; border: 0; background: transparent; }
 .task-form textarea, .edit-form textarea { resize: vertical; min-height: 70px; }
@@ -369,6 +405,9 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 .undo-toast button { padding: 4px 0; border: 0; background: transparent; color: #f2d3b1; font-weight: 750; }
 
 @media (max-width: 520px) {
+  .kitchen-section .board-header { flex-wrap: wrap; }
+  .kitchen-section .board-header > div { flex: 1 1 100%; }
+  .kitchen-section .board-header::after { margin-left: auto; }
   .room-toolbar { align-items: stretch; }
   .room-identity { width: 100%; }
   .connection-pill { width: 100%; border-radius: 9px; }

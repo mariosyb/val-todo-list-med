@@ -15,14 +15,40 @@ const database = getDatabase(initializeApp(firebaseConfig));
 const encounterTime = new Date("2027-01-15T20:30:00-05:00").getTime();
 const formatter = new Intl.NumberFormat("es-CO");
 const names = { mario: "Mario", valery: "Valery" };
-const categories = ["planning", "living"];
-const filters = { planning: "all", living: "all" };
+const listConfig = {
+  planning: {
+    singular: "idea", plural: "ideas", titleLabel: "Título", noteLabel: "Nota opcional",
+    done: "hecha", pending: "pendiente", deleted: "Idea eliminada",
+    empty: "Todavía no hay ideas. La primera puede ser tuya ♡",
+    noPending: "No hay ideas pendientes por ahora.", noDone: "Aún no hay ideas hechas.",
+  },
+  living: {
+    singular: "idea", plural: "ideas", titleLabel: "Título", noteLabel: "Nota opcional",
+    done: "hecha", pending: "pendiente", deleted: "Idea eliminada",
+    empty: "Todavía no hay ideas. La primera puede ser tuya ♡",
+    noPending: "No hay ideas pendientes por ahora.", noDone: "Aún no hay ideas hechas.",
+  },
+  menu: {
+    singular: "plato", plural: "platos", titleLabel: "Plato", noteLabel: "Ingredientes y detalles",
+    done: "cocinado", pending: "por cocinar", deleted: "Plato eliminado",
+    empty: "Nuestro menú empieza con un antojo ♡",
+    noPending: "No hay platos pendientes por cocinar.", noDone: "Todavía tenemos todo el menú por disfrutar.",
+  },
+  shopping: {
+    singular: "ingrediente", plural: "ingredientes", titleLabel: "Ingrediente", noteLabel: "Cantidad y para qué plato",
+    done: "comprado", pending: "por comprar", deleted: "Ingrediente eliminado",
+    empty: "Anotemos lo que necesitamos para nuestra mesa.",
+    noPending: "No hay ingredientes pendientes por comprar.", noDone: "Todavía no marcamos ingredientes como comprados.",
+  },
+};
+const categories = Object.keys(listConfig);
+const filters = Object.fromEntries(categories.map((category) => [category, "all"]));
 const status = document.getElementById("sync-status");
 const missingLink = document.getElementById("missing-link");
 const roomToolbar = document.getElementById("room-toolbar");
 const connectionIndicator = document.getElementById("connection-indicator");
 const connectionLabel = document.getElementById("connection-label");
-const boardsGrid = document.querySelector(".boards-grid");
+const roomContent = document.querySelectorAll("[data-room-content]");
 const boardStatusRow = document.querySelector(".board-status-row");
 const undoToast = document.getElementById("undo-toast");
 
@@ -52,10 +78,11 @@ function updateCountdown() {
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
-function setStatus(message, tone = "normal") {
-  status.textContent = message;
-  status.dataset.tone = tone;
-  status.hidden = tone !== "error";
+function setStatus(message, tone = "normal", board = null) {
+  const target = board?.querySelector(".board-feedback") || status;
+  target.textContent = message;
+  target.dataset.tone = tone;
+  target.hidden = tone !== "error";
 }
 
 function renderConnection() {
@@ -93,6 +120,7 @@ function closeUndo() {
 function showUndo(item) {
   clearTimeout(undoTimer);
   deleted = item;
+  document.getElementById("undo-message").textContent = listConfig[item.task.category].deleted;
   undoToast.hidden = false;
   undoTimer = setTimeout(closeUndo, 10000);
 }
@@ -124,7 +152,7 @@ function connectFromRoute() {
     loading = true;
   }
   missingLink.hidden = Boolean(route);
-  boardsGrid.hidden = !route;
+  roomContent.forEach((section) => { section.hidden = !route; });
   boardStatusRow.hidden = !route;
   roomToolbar.hidden = !route;
   document.querySelectorAll(".add-preview").forEach((button) => { button.hidden = !route; });
@@ -205,10 +233,11 @@ function actionButton(label, action, className = "") {
 }
 
 function makeTaskCard(id, task) {
+  const config = listConfig[task.category];
   const card = element("article", `task${task.completed ? " is-complete" : ""}`);
   card.dataset.id = id;
   const check = actionButton(task.completed ? "✓" : "", "toggle", "task-check");
-  check.setAttribute("aria-label", task.completed ? `Marcar «${task.title}» como pendiente` : `Marcar «${task.title}» como hecha`);
+  check.setAttribute("aria-label", `Marcar «${task.title}» como ${task.completed ? config.pending : config.done}`);
   check.setAttribute("aria-pressed", String(Boolean(task.completed)));
   card.append(check);
   const content = element("div", "task-content");
@@ -231,6 +260,7 @@ function labeledField(text, input) {
 }
 
 function makeEditCard(id, task) {
+  const config = listConfig[task.category];
   const card = element("article", "task task-editing");
   card.dataset.id = id;
   const form = element("form", "edit-form");
@@ -246,7 +276,7 @@ function makeEditCard(id, task) {
   note.maxLength = 1000;
   note.rows = 2;
   note.value = editing?.note ?? task.note ?? "";
-  form.append(labeledField("Título", title), labeledField("Nota opcional", note));
+  form.append(labeledField(config.titleLabel, title), labeledField(config.noteLabel, note));
   const actions = element("div", "form-actions");
   actions.append(actionButton("Cancelar", "cancel-edit", "form-cancel"));
   const save = element("button", "form-submit", "Guardar cambios");
@@ -258,20 +288,21 @@ function makeEditCard(id, task) {
 }
 
 function renderBoard(category) {
+  const config = listConfig[category];
   const list = document.getElementById(`${category}-list`);
   const all = Object.entries(todos)
     .filter(([, task]) => task && task.category === category)
     .sort((a, b) => (a[1].createdAt || 0) - (b[1].createdAt || 0));
   const count = all.length;
-  document.getElementById(`${category}-count`).textContent = `${count} ${count === 1 ? "idea" : "ideas"}`;
+  document.getElementById(`${category}-count`).textContent = `${count} ${count === 1 ? config.singular : config.plural}`;
   const visible = all.filter(([, task]) => filters[category] === "all" || (filters[category] === "done" ? task.completed : !task.completed));
   const nodes = visible.map(([id, task]) => editing?.id === id ? makeEditCard(id, task) : makeTaskCard(id, task));
   if (!nodes.length) {
-    let message = "Todavía no hay ideas. La primera puede ser tuya ♡";
+    let message = config.empty;
     if (!activeRoom) message = "Abre tu enlace personal para ver las ideas compartidas.";
-    else if (loading) message = "Cargando ideas compartidas…";
-    else if (filters[category] === "pending") message = "No hay ideas pendientes por ahora.";
-    else if (filters[category] === "done") message = "Aún no hay ideas hechas.";
+    else if (loading) message = "Cargando nuestra lista…";
+    else if (filters[category] === "pending") message = config.noPending;
+    else if (filters[category] === "done") message = config.noDone;
     nodes.push(element("p", "task-empty", message));
   }
   list.replaceChildren(...nodes);
@@ -283,6 +314,10 @@ function renderBoards() {
 
 document.querySelectorAll(".board").forEach((board) => {
   const category = board.dataset.category;
+  const feedback = element("p", "board-feedback");
+  feedback.setAttribute("role", "alert");
+  feedback.hidden = true;
+  board.append(feedback);
   board.querySelectorAll(".filter-button").forEach((button) => {
     button.addEventListener("click", () => {
       filters[category] = button.dataset.filter;
@@ -310,6 +345,7 @@ document.querySelectorAll(".board").forEach((board) => {
   });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    feedback.hidden = true;
     if (!activeRoom) return;
     const title = form.elements.title.value.trim();
     if (!title) return;
@@ -325,7 +361,7 @@ document.querySelectorAll(".board").forEach((board) => {
       form.hidden = true;
       addButton.hidden = false;
     } catch {
-      setStatus("No se pudo guardar la idea. Comprueba la conexión e inténtalo otra vez.", "error");
+      setStatus("No se pudo guardar esta entrada. Comprueba la conexión e inténtalo otra vez.", "error", board);
     } finally {
       submit.disabled = false;
     }
@@ -340,6 +376,7 @@ document.querySelectorAll(".board").forEach((board) => {
     const editForm = event.target.closest(".edit-form");
     if (!editForm) return;
     event.preventDefault();
+    feedback.hidden = true;
     const id = editForm.dataset.editId;
     const title = editForm.elements.title.value.trim();
     if (!title || !todos[id]) return;
@@ -351,7 +388,7 @@ document.querySelectorAll(".board").forEach((board) => {
       editing = null;
       renderBoards();
     } catch {
-      setStatus("No se pudieron guardar los cambios. Inténtalo de nuevo.", "error");
+      setStatus("No se pudieron guardar los cambios. Inténtalo de nuevo.", "error", board);
       save.disabled = false;
     }
   });
@@ -359,6 +396,7 @@ document.querySelectorAll(".board").forEach((board) => {
     const button = event.target.closest("button[data-action]");
     const card = button?.closest(".task[data-id]");
     if (!card || !activeRoom) return;
+    feedback.hidden = true;
     const id = card.dataset.id;
     const task = todos[id];
     if (!task && button.dataset.action !== "cancel-edit") return;
@@ -366,7 +404,7 @@ document.querySelectorAll(".board").forEach((board) => {
       case "toggle":
         button.disabled = true;
         try { await update(todoRef(id), { completed: !task.completed, updatedAt: Date.now() }); }
-        catch { setStatus("No se pudo cambiar el estado de la idea.", "error"); button.disabled = false; }
+        catch { setStatus("No se pudo cambiar el estado. Inténtalo de nuevo.", "error", board); button.disabled = false; }
         break;
       case "edit":
         editing = { id, title: task.title, note: task.note || "" };
@@ -383,7 +421,7 @@ document.querySelectorAll(".board").forEach((board) => {
           await remove(todoRef(id));
           if (editing?.id === id) editing = null;
           showUndo({ id, task });
-        } catch { setStatus("No se pudo eliminar la idea. Inténtalo de nuevo.", "error"); button.disabled = false; }
+        } catch { setStatus("No se pudo eliminar esta entrada. Inténtalo de nuevo.", "error", board); button.disabled = false; }
         break;
     }
   });
@@ -395,8 +433,20 @@ document.getElementById("undo-button").addEventListener("click", async () => {
   const button = document.getElementById("undo-button");
   button.disabled = true;
   try { await set(todoRef(id), task); closeUndo(); }
-  catch { setStatus("No se pudo recuperar la idea. Inténtalo de nuevo.", "error"); }
+  catch { setStatus("No se pudo recuperar esta entrada. Inténtalo de nuevo.", "error"); }
   finally { button.disabled = false; }
+});
+
+document.querySelectorAll("details[data-collapse]").forEach((panel) => {
+  const key = `medellin:section:${panel.dataset.collapse}`;
+  try {
+    if (localStorage.getItem(key) === "closed") panel.open = false;
+  } catch { /* Las listas siguen funcionando si el navegador bloquea el almacenamiento local. */ }
+  panel.addEventListener("toggle", () => {
+    try {
+      localStorage.setItem(key, panel.open ? "open" : "closed");
+    } catch { /* Guardar la preferencia es opcional. */ }
+  });
 });
 
 window.addEventListener("hashchange", connectFromRoute);
